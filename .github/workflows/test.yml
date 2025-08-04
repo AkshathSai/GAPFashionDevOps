@@ -3,10 +3,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'docs/*.md'       # Only .md files in docs folder
-    paths-ignore:
-      - 'README.md'       # Ignore README changes
-      - 'docs/draft/**'   # Ignore draft documentation
+      - 'docs/**'         # Any file in docs folder
 
 jobs:
   detect-changes:
@@ -17,7 +14,9 @@ jobs:
       
       - name: Show changed files
         run: |
-          echo "Workflow triggered by path changes"
+          echo "Workflow triggered by docs changes"
           echo "Modified files in this push:"
           git diff --name-only ${{ github.event.before }} ${{ github.sha }}
-  
+      
+      - name: Documentation updated
+        run: echo "Documentation files were modified!"
