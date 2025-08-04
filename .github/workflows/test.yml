@@ -1,10 +1,28 @@
-name: Test workflow
+name: Pull Request Trigger Demo
 
-on: push
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [ main ]
 
 jobs:
-  build:
+  pr-checks:
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     steps:
-      - name: Simulate build
-        run: echo 'build'
+      - name: PR Information
+        run: |
+          echo "PR Action: ${{ github.event.action }}"
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+          echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "Base Branch: ${{ github.event.pull_request.base.ref }}"
+          echo "Head Branch: ${{ github.event.pull_request.head.ref }}"
+      - name: Build and Test
+        run: echo "Running build and tests for PR"
+
+  merge-notification:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true
+    steps:
+      - name: Merge Success
+        run: echo "PR successfully merged!"
