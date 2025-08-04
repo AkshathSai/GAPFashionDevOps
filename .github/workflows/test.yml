@@ -1,18 +1,19 @@
-name: Scheduled Trigger Demo
+name: Issue Event Filters Demo
 on:
-  schedule:
-    # Runs every day at 9:00 AM UTC
-    - cron: '0 9 * * *'
-  workflow_dispatch: # Manual trigger for testing
+  issues:
+    types: [opened, closed, labeled, unlabeled, assigned, unassigned]
 
 jobs:
-  scheduled-job:
+  issue-handler:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Scheduled task
+      - name: Issue Event Handler
         run: |
-          echo "Scheduled workflow executed at: $(date)"
           echo "Event: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+          
+          if [[ "${{ github.event_name }}" == "issues" ]]; then
+            echo "Issue Number: ${{ github.event.issue.number }}"
+            echo "Issue Title: ${{ github.event.issue.title }}"
+            echo "Issue State: ${{ github.event.issue.state }}"
+          fi
