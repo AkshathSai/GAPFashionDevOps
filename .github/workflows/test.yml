@@ -1,19 +1,24 @@
-name: Issue Event Filters Demo
+name: Tag Trigger Demo
 on:
-  issues:
-    types: [opened, closed, labeled, unlabeled, assigned, unassigned]
+  push:
+    tags:
+      - 'v*'           # Matches v1.0, v2.1, etc.
 
 jobs:
-  issue-handler:
+  tag-info:
     runs-on: ubuntu-latest
     steps:
-      - name: Issue Event Handler
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Tag Information
         run: |
-          echo "Event: ${{ github.event_name }}"
-          echo "Action: ${{ github.event.action }}"
-          
-          if [[ "${{ github.event_name }}" == "issues" ]]; then
-            echo "Issue Number: ${{ github.event.issue.number }}"
-            echo "Issue Title: ${{ github.event.issue.title }}"
-            echo "Issue State: ${{ github.event.issue.state }}"
-          fi
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Full Ref: ${{ github.ref }}"
+          echo "Commit SHA: ${{ github.sha }}"
+      
+      - name: Version Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "This is a version release: ${{ github.ref_name }}"
+          echo "Deploying to production..."
