@@ -1,24 +1,23 @@
-name: Tag Trigger Demo
+name: Path Trigger Demo
 on:
   push:
-    tags:
-      - 'v*'           # Matches v1.0, v2.1, etc.
+    branches: [ main ]
+    paths:
+      - 'docs/*.md'       # Only .md files in docs folder
+    paths-ignore:
+      - 'README.md'       # Ignore README changes
+      - 'docs/draft/**'   # Ignore draft documentation
 
 jobs:
-  tag-info:
+  detect-changes:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Tag Information
+      - name: Show changed files
         run: |
-          echo "Tag: ${{ github.ref_name }}"
-          echo "Full Ref: ${{ github.ref }}"
-          echo "Commit SHA: ${{ github.sha }}"
-      
-      - name: Version Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          echo "This is a version release: ${{ github.ref_name }}"
-          echo "Deploying to production..."
+          echo "Workflow triggered by path changes"
+          echo "Modified files in this push:"
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }}
+  
