@@ -1,2 +1,1 @@
-# GAPFashionDevOps
-DevOps learning Hands on
+# Main README
