@@ -16,4 +16,6 @@ jobs:
             echo "Issue Number: ${{ github.event.issue.number }}"
             echo "Issue Title: ${{ github.event.issue.title }}"
             echo "Issue State: ${{ github.event.issue.state }}"
+            echo "Label : ${{ github.event.issue.label }}"
+
           fi
