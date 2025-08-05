@@ -1,0 +1,19 @@
+name: Issue Event Filters Demo
+on:
+  issues:
+    types: [opened, closed, labeled, unlabeled, assigned, unassigned]
+
+jobs:
+  issue-handler:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Issue Event Handler
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+          
+          if [[ "${{ github.event_name }}" == "issues" ]]; then
+            echo "Issue Number: ${{ github.event.issue.number }}"
+            echo "Issue Title: ${{ github.event.issue.title }}"
+            echo "Issue State: ${{ github.event.issue.state }}"
+          fi
