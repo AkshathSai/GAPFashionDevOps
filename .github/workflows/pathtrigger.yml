@@ -1,0 +1,23 @@
+name: Path Trigger Demo
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'         # Any file in docs folder
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Show changed files
+        run: |
+          echo "Workflow triggered by docs changes"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Event: ${{ github.event_name }}"
+      
+      - name: Documentation updated
+        run: echo "Documentation files were modified!"
