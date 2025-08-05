@@ -1,0 +1,24 @@
+name: Tag Trigger Demo
+on:
+  push:
+    tags:
+      - 'v*'           # Matches v1.0, v2.1, etc.
+
+jobs:
+  tag-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Tag Information
+        run: |
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Full Ref: ${{ github.ref }}"
+          echo "Commit SHA: ${{ github.sha }}"
+      
+      - name: Version Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "This is a version release: ${{ github.ref_name }}"
+          echo "Deploying to production..."
