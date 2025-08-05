@@ -19,3 +19,15 @@ jobs:
             echo "Label : ${{ github.event.issue.label }}"
 
           fi
+          
+      - name: Bug Label Handler
+        if: github.event.label.name == 'bug'
+        run: |
+          echo "🐛 BUG DETECTED! 🐛"
+          echo "Issue #${{ github.event.issue.number }} has been labeled as a bug"
+          echo "Title: ${{ github.event.issue.title }}"
+          echo "Assignee: ${{ github.event.issue.assignee.login || 'Not assigned' }}"
+          echo "Priority: HIGH - Bug needs immediate attention!"
+          echo "Next steps:"
+          echo "1. Notify development team"
+          echo "2. Assign to bug triage"
