@@ -1,0 +1,58 @@
+name: Job Outputs & Dependencies Demo
+on:
+  workflow_dispatch:
+
+jobs:
+  # Job 1: Generate information
+  build-info:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      timestamp: ${{ steps.time.outputs.timestamp }}
+      should-deploy: ${{ steps.check.outputs.deploy }}
+    
+    steps:
+      - name: Generate Version
+        id: version
+        run: |
+          VERSION="1.0.${{ github.run_number }}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Generated version: $VERSION"
+      
+      - name: Generate Timestamp
+        id: time
+        run: |
+          TIMESTAMP=$(date '+%Y-%m-%d-%H-%M')
+          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "Generated timestamp: $TIMESTAMP"
+      
+      - name: Check Deployment
+        id: check
+        run: |
+          echo "deploy=true" >> $GITHUB_OUTPUT
+          echo "Deployment approved"
+
+  # Job 2: Deploy (depends on both previous jobs)
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-info
+    if: needs.build-info.outputs.should-deploy == 'true'
+    steps:
+      - name: Deploy
+        run: |
+          echo "Deploying version: ${{ needs.build-info.outputs.version }}"
+          echo "Build time: ${{ needs.build-info.outputs.timestamp }}"
+          echo "✅ Deployment completed!"
+
+  # Job 3: Always runs (use case: notification)
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build-info, deploy]
+    if: always()
+    steps:
+      - name: Notification
+        run: |
+          echo "Build Info: ${{ needs.build-info.result }}"
+          echo "Tests: ${{ needs.test.result }}"
+          echo "Deploy: ${{ needs.deploy.result }}"
+          echo "Workflow completed!"
