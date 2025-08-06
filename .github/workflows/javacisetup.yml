@@ -28,6 +28,7 @@ jobs:
       
       - name: Build Java
         run: |
+          cd java
           javac App.java
           java App
           echo "Java build completed!"
