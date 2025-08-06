@@ -1,0 +1,31 @@
+name: Python CICD Setup
+on:
+  push:
+    branches: [ main ]
+
+env:
+  BUILD_NUMBER: ${{ github.run_number }}
+
+jobs:
+  nodejs-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Show Context
+        run: |
+          echo "Node Version: $(node --version)"
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Workspace: ${{ github.workspace }}"
+      
+      - name: Run Node.js
+        run: |
+          cd nodejs
+          node index.js
+          echo "Node.js completed!"

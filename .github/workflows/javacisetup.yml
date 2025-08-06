@@ -1,4 +1,4 @@
-name: Basic Java CICD
+name: Java CICD Setup
 on:
   push:
     branches: [ main ]
