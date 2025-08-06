@@ -1,0 +1,60 @@
+name: Matrix Strategy Demo
+on:
+  workflow_dispatch:
+
+jobs:
+  matrix-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        language: [java, nodejs, python]
+        include:
+          - language: java
+            version: '21'
+          - language: nodejs
+            version: '18'
+          - language: python
+            version: '3.11'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Show Matrix Info
+        run: |
+          echo "OS: ${{ matrix.os }}"
+          echo "Language: ${{ matrix.language }}"
+          echo "Version: ${{ matrix.version }}"
+        shell: bash
+      
+      - name: Setup Java
+        if: matrix.language == 'java'
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.version }}
+          distribution: 'temurin'
+      
+      - name: Setup Node.js
+        if: matrix.language == 'nodejs'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.version }}
+      
+      - name: Setup Python
+        if: matrix.language == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.version }}
+      
+      - name: Run Application
+        run: |
+          if [ "${{ matrix.language }}" = "java" ]; then
+            cd java && javac App.java && java App
+          elif [ "${{ matrix.language }}" = "nodejs" ]; then
+            cd nodejs && node index.js
+          elif [ "${{ matrix.language }}" = "python" ]; then
+            cd python && python app.py
+          fi
+          echo "${{ matrix.language }} completed on ${{ matrix.os }}!"
+        shell: bash
