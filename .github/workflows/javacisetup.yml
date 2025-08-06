@@ -1,0 +1,33 @@
+name: Basic Java CICD
+on:
+  push:
+    branches: [ main ]
+
+env:
+  BUILD_NUMBER: ${{ github.run_number }}
+
+jobs:
+  java-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      
+      - name: Show Context
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Build Number: ${{ env.BUILD_NUMBER }}"
+      
+      - name: Build Java
+        run: |
+          javac App.java
+          java App
+          echo "Java build completed!"
