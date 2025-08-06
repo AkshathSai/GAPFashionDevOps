@@ -1,0 +1,31 @@
+name: Python CI Setup
+on:
+  push:
+    branches: [ main ]
+
+env:
+  BUILD_NUMBER: ${{ github.run_number }}
+
+jobs:
+  python-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Show Context
+        run: |
+          echo "Python Version: $(python --version)"
+          echo "GitHub SHA: ${{ github.sha }}"
+          echo "Event: ${{ github.event_name }}"
+      
+      - name: Run Python
+        run: |
+          cd python
+          python app.py
+          echo "Python completed!"
