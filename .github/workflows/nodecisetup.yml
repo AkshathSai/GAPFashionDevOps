@@ -1,4 +1,4 @@
-name: Python CICD Setup
+name: Nodejs CICD Setup
 on:
   push:
     branches: [ main ]
