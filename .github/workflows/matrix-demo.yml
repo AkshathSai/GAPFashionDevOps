@@ -6,6 +6,7 @@ jobs:
   matrix-test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false  # Change to 'true' to see different behavior
       matrix:
         os: [ubuntu-latest, windows-latest]
         language: [java, nodejs, python]
@@ -47,6 +48,13 @@ jobs:
         with:
           python-version: ${{ matrix.version }}
       
+      - name: Simulate Failure (Demo)
+        if: matrix.language == 'java' && matrix.os == 'windows-latest'
+        run: |
+          echo "❌ Simulating failure for Java on Windows"
+          exit 1
+        shell: bash
+      
       - name: Run Application
         run: |
           if [ "${{ matrix.language }}" = "java" ]; then
@@ -56,5 +64,5 @@ jobs:
           elif [ "${{ matrix.language }}" = "python" ]; then
             cd python && python app.py
           fi
-          echo "${{ matrix.language }} completed on ${{ matrix.os }}!"
+          echo "✅ ${{ matrix.language }} completed on ${{ matrix.os }}!"
         shell: bash
